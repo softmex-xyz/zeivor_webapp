@@ -41,6 +41,15 @@ Keep Laravel/PHPUnit tests in `tests/Feature` and `tests/Unit`; run them with
 `resources/js` using the `*.test.ts` naming convention; run them with
 `npm run test:frontend` or `npm run test:frontend:watch`.
 
+## User registration
+
+Send a JSON `POST` to `/users/register` with `name`, `email`, and `password`,
+and optionally `phone`. This public endpoint uses stateless API middleware and
+does not require a CSRF token. Browser clients must use an origin configured in
+`CORS_ALLOWED_ORIGINS`. Successful requests return the user as JSON; invalid
+requests return JSON validation errors. Controller entry is logged without
+request data.
+
 ## Agentic Development
 
 Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
