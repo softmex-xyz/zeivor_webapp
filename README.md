@@ -29,6 +29,18 @@ In addition, [Laracasts](https://laracasts.com) contains thousands of video tuto
 
 You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
 
+## Frontend TypeScript
+
+The Vue frontend supports TypeScript in `.ts` files and Vue components using
+`<script setup lang="ts">`. Run `npm run typecheck` to check frontend types.
+
+## Testing
+
+Keep Laravel/PHPUnit tests in `tests/Feature` and `tests/Unit`; run them with
+`composer test`. Keep frontend/Vitest tests alongside their source files under
+`resources/js` using the `*.test.ts` naming convention; run them with
+`npm run test:frontend` or `npm run test:frontend:watch`.
+
 ## Agentic Development
 
 Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
