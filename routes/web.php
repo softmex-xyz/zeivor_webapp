@@ -16,3 +16,7 @@ Route::get('/experto', function () {
 Route::get('/seguridad', function () {
     return Inertia::render('Seguridad');
 })->name('seguridad');
+
+Route::get("/usuarios", function (){
+    return Inertia::render("Usuarios");
+})->name("usuarios");
