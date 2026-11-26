@@ -96,9 +96,9 @@ describe("NavBar", () => {
         expect(links.length).toBe(5);
 
         expect(links[0].getAttribute("href")).toBe("/");
-        expect(links[1].getAttribute("href")).toBe("#seguridad");
-        expect(links[2].getAttribute("href")).toBe("#contacto");
-        expect(links[3].getAttribute("href")).toBe("#usuarios");
+        expect(links[1].getAttribute("href")).toBe("/seguridad");
+        expect(links[2].getAttribute("href")).toBe("/contacto");
+        expect(links[3].getAttribute("href")).toBe("/usuarios");
         expect(links[4].getAttribute("href")).toBe("/experto");
     });
 
@@ -116,6 +116,10 @@ describe("NavBar", () => {
 
     it("does not mark hash links as active", () => {
         const root = mountNavBar({
+            links: [
+                { label: "Inicio", href: "/" },
+                { label: "Seguridad", href: "#seguridad" },
+            ],
             currentPath: "#seguridad",
         });
 
@@ -123,6 +127,7 @@ describe("NavBar", () => {
 
         expect(seguridadLink).not.toBeNull();
         expect(seguridadLink?.className).toContain("text-[#222B3A]");
+        expect(seguridadLink?.className).not.toContain("font-semibold");
     });
 
     it("renders the mobile menu button with correct accessibility attributes", () => {
@@ -191,7 +196,7 @@ describe("NavBar", () => {
         expect(root.querySelector("#mobile-nav-menu")).not.toBeNull();
 
         const mobileLink = root.querySelector(
-            '#mobile-nav-menu a[href="#seguridad"]',
+            '#mobile-nav-menu a[href="/seguridad"]',
         ) as HTMLAnchorElement;
 
         expect(mobileLink).not.toBeNull();

@@ -22,9 +22,9 @@ const props = withDefaults(defineProps<Props>(), {
     logoSrc: logoZeivor,
     links: () => [
         { label: "Inicio", href: "/" },
-        { label: "Seguridad", href: "#seguridad" },
-        { label: "Contacto", href: "#contacto" },
-        { label: "Usuarios", href: "#usuarios" },
+        { label: "Seguridad", href: "/seguridad" },
+        { label: "Contacto", href: "/contacto" },
+        { label: "Usuarios", href: "/usuarios" },
         { label: "¿Eres un experto?", href: "/experto" },
     ],
     currentPath: "/",

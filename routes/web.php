@@ -12,3 +12,7 @@ Route::get('/', function () {
 Route::get('/experto', function () {
     return Inertia::render('Register');
 })->name('register');
+
+Route::get('/seguridad', function () {
+    return Inertia::render('Seguridad');
+})->name('seguridad');
