@@ -7,4 +7,8 @@ Route::get('/', function () {
     return Inertia::render('Home', [
         'mensaje' => 'Configuración funcionando correctamente.',
     ]);
-});
+})->name('home');
+
+Route::get('/experto', function () {
+    return Inertia::render('Register');
+})->name('register');
