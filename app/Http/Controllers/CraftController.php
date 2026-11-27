@@ -2,64 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Craft;
+use App\Services\CraftService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CraftController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): JsonResponse
     {
-        //
+        return response()->json(CraftService::getAllCrafts());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show(int|string $id): JsonResponse
     {
-        //
+        $craft = CraftService::getCraftById($id);
+        abort_if($craft === null, 404);
+
+        return response()->json($craft);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        //
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'description' => ['nullable', 'string'],
+            'map_color' => ['nullable', 'string', 'max:9'],
+            'active' => ['boolean'],
+        ]);
+
+        return response()->json(CraftService::createCraft($data));
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Craft $craft)
+    public function update(Request $request, int|string $id): JsonResponse
     {
-        //
+        $craft = CraftService::getCraftById($id);
+        abort_if($craft === null, 404);
+
+        $data = $request->validate([
+            'name' => ['sometimes', 'required', 'string', 'max:100', Rule::unique('crafts', 'name')->ignore($craft)],
+            'description' => ['nullable', 'string'],
+            'map_color' => ['nullable', 'string', 'max:9'],
+            'active' => ['boolean'],
+        ]);
+
+        $craft = CraftService::updateCraft($craft->getKey(), $data);
+        abort_if($craft === null, 404);
+
+        return response()->json($craft);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Craft $craft)
+    public function destroy(int|string $id): JsonResponse
     {
-        //
-    }
+        $craft = CraftService::deleteCraft($id);
+        abort_if($craft === null, 404);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Craft $craft)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Craft $craft)
-    {
-        //
+        return response()->json($craft);
     }
 }
