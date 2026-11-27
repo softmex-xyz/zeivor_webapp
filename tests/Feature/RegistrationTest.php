@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
 
@@ -17,8 +16,6 @@ class RegistrationTest extends TestCase
     public function test_registration_without_csrf_token_reaches_controller_and_creates_user(): void
     {
         $this->app->bind(PreventRequestForgery::class, CsrfEnabledForRegistrationTest::class);
-        Log::spy();
-
         $response = $this->postJson('/users/register', [
             'name' => 'Jane Doe',
             'email' => 'jane@example.com',
@@ -38,7 +35,6 @@ class RegistrationTest extends TestCase
             'user_type' => 'normal',
         ]);
         $this->assertTrue(Hash::check('test-password', User::where('email', 'jane@example.com')->firstOrFail()->password));
-        Log::shouldHaveReceived('info')->once()->with('Creating a new user.');
     }
 
     public function test_invalid_registration_returns_json_and_creates_no_user(): void

@@ -56,7 +56,7 @@ class UserService
         return $user;
     }
 
-    private static function normalizePhone(array $data): array
+    public static function normalizePhone(array $data): array
     {
         if (! isset($data['phone'])) {
             return $data;

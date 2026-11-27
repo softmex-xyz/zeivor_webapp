@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use RuntimeException;
 
 class UserController extends Controller
 {
@@ -19,7 +25,8 @@ class UserController extends Controller
     // show data for selected user
     public function show($id)
     {
-        $user = UserService::getUserById($id);
+        $user = User::findOrFail($id);
+        Gate::authorize('manage-user', $user);
 
         return response()->json($user);
     }
@@ -42,17 +49,44 @@ class UserController extends Controller
     // update data for selected user
     public function update(Request $request, $id)
     {
-        $user = UserService::updateUser($id, $request->all());
+        $user = User::findOrFail($id);
+        Gate::authorize('manage-user', $user);
+
+        $data = $request->validate([
+            'name' => ['sometimes', 'required', 'string', 'max:255'],
+            'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user)],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'password' => ['sometimes', 'required', 'string'],
+        ]);
+        $data = UserService::normalizePhone($data);
+        Validator::make($data, [
+            'phone' => ['nullable', Rule::unique('users')->ignore($user)],
+        ])->validate();
+
+        if (! $user->update($data)) {
+            throw new RuntimeException('The user could not be updated.');
+        }
 
         return response()->json($user);
     }
 
     // delete selected user
-    public function destroy($id)
+    public function destroy(Request $request, $id): JsonResponse
     {
-        $user = UserService::deleteUser($id);
+        $target = User::findOrFail($id);
+        Gate::authorize('manage-user', $target);
+        $deletingOwnAccount = $request->user()->is($target);
+        if (! $target->delete()) {
+            throw new RuntimeException('The user could not be deleted.');
+        }
 
-        return response()->json($user);
+        if ($deletingOwnAccount) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
+        return response()->json($target);
     }
 
     // login for an existing user
